@@ -31,7 +31,7 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: '#F2F5F4', paddingRight: duo.gutter }}>
       <AppScreens />
-      <AiAssist app="HVAC Cx Calc" hint="HVAC commissioning: airflow, psychrometrics, superheat and subcooling, electrical checks." gutter={duo.gutter} />
+      <AiAssist app="HVAC Cx Calc" hint="HVAC commissioning: airflow, psychrometrics, superheat and subcooling, electrical checks." gutter={duo.gutter} bottom={108} />
     </View>
   );
 }
