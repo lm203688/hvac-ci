@@ -13,6 +13,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as H from './src/hvac';
 import FeedbackModal from './src/FeedbackModal';
 import { GROUPS, TOOLS, encodeValue, parseFieldValue, toolById, type Field, type Tool, type Units } from './src/tools';
+import { useDuo } from './src/duo';
 
 type Screen = { kind: 'list' } | { kind: 'tool'; id: string } | { kind: 'job' } | { kind: 'about' };
 
@@ -25,6 +26,15 @@ const JOB_FILE = (() => {
 })();
 
 export default function App() {
+  const duo = useDuo();
+  return (
+    <View style={{ flex: 1, backgroundColor: '#F2F5F4', paddingRight: duo.gutter }}>
+      <AppScreens />
+    </View>
+  );
+}
+
+function AppScreens() {
   const [units, setUnits] = useState<Units>('imperial');
   const [screen, setScreen] = useState<Screen>({ kind: 'list' });
   const [values, setValues] = useState<Record<string, Record<string, string>>>({});
