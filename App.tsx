@@ -14,6 +14,7 @@ import * as H from './src/hvac';
 import FeedbackModal from './src/FeedbackModal';
 import { GROUPS, TOOLS, encodeValue, parseFieldValue, toolById, type Field, type Tool, type Units } from './src/tools';
 import { useDuo } from './src/duo';
+import AiAssist from './src/aiAssist';
 
 type Screen = { kind: 'list' } | { kind: 'tool'; id: string } | { kind: 'job' } | { kind: 'about' };
 
@@ -30,6 +31,7 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: '#F2F5F4', paddingRight: duo.gutter }}>
       <AppScreens />
+      <AiAssist app="HVAC Cx Calc" hint="HVAC commissioning: airflow, psychrometrics, superheat and subcooling, electrical checks." gutter={duo.gutter} />
     </View>
   );
 }
