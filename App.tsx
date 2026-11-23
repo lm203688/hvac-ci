@@ -11,6 +11,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as H from './src/hvac';
+import FeedbackModal from './src/FeedbackModal';
 import { GROUPS, TOOLS, encodeValue, parseFieldValue, toolById, type Field, type Tool, type Units } from './src/tools';
 
 type Screen = { kind: 'list' } | { kind: 'tool'; id: string } | { kind: 'job' } | { kind: 'about' };
@@ -476,6 +477,7 @@ function JobScreen(props: {
 
 function AboutScreen(props: { onBack: () => void }) {
   const entries = Object.entries(H.DATA_SOURCES);
+  const [fbOpen, setFbOpen] = useState(false);
   return (
     <View style={S.root}>
       <StatusBar style="dark" />
@@ -508,7 +510,11 @@ function AboutScreen(props: { onBack: () => void }) {
           </Text>
         </View>
         <Text style={S.disclaimer}>{H.DISCLAIMER}</Text>
+        <Pressable onPress={() => setFbOpen(true)} style={{ paddingVertical: 14 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: '#8A4B12' }}>Send feedback</Text>
+        </Pressable>
       </ScrollView>
+      <FeedbackModal visible={fbOpen} onClose={() => setFbOpen(false)} context="about" />
     </View>
   );
 }
