@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "production": {
+      "autoIncrement": false,
+      "credentialsSource": "local",
+      "env": {
+        "EAS_BUILD_SKIP_LOCKFILE_CHECK": "1"
+      },
+      "ios": {
+        "image": "sdk-54"
+      }
+    },
+    "simulator": {
+      "extends": "production",
+      "credentialsSource": "remote",
+      "ios": {
+        "simulator": true,
+        "image": "sdk-54"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6835633799",
+        "appleId": "463102527@qq.com",
+        "appleTeamId": "98KA35Y747",
+        "ascApiKeyPath": "C:\\Users\\Administrator\\Documents\\redoubt-keys\\AuthKey_3K649N47PH.p8",
+        "ascApiKeyIssuerId": "06f76b21-eb9c-462e-982e-2632007dacc5",
+        "ascApiKeyId": "3K649N47PH"
+      }
+    }
+  }
+}
