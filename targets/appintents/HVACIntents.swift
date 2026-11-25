@@ -155,3 +155,67 @@ struct HVACShortcuts: AppShortcutsProvider {
     )
   }
 }
+
+
+// MARK: - Refrigerant entity (Spotlight + Siri parameter)
+
+// 意图层不读库：制冷剂常数是公开标准值，写死比查 app 状态可靠。Spotlight 里搜
+// "R-454B" 能直接跳到这里，问 Siri 也能拿到 GWP 与充注量。
+@available(iOS 16.0, *)
+struct RefrigerantEntity: AppEntity {
+  static var typeDisplayRepresentation: TypeDisplayRepresentation = TypeDisplayRepresentation(name: "Refrigerant")
+  static var defaultQuery = RefrigerantQuery()
+
+  let id: String
+  let summary: String
+  /// 100-year GWP (AR4/AR5 figure quoted on refrigerant cylinders).
+  let gwp: Int
+  /// ASHRAE 34 safety classification.
+  let safetyClass: String
+  /// Nominal pounds of charge per ton of cooling.
+  let poundsPerTon: Double
+
+  var displayRepresentation: DisplayRepresentation {
+    DisplayRepresentation(title: "\(summary)", subtitle: "GWP \(gwp) · \(safetyClass)")
+  }
+
+  static let all: [RefrigerantEntity] = [
+    RefrigerantEntity(id: "r-410a", summary: "R-410A", gwp: 2088, safetyClass: "A1", poundsPerTon: 2.5),
+    RefrigerantEntity(id: "r-32", summary: "R-32", gwp: 675, safetyClass: "A2L", poundsPerTon: 2.0),
+    RefrigerantEntity(id: "r-454b", summary: "R-454B", gwp: 466, safetyClass: "A2L", poundsPerTon: 2.1),
+    RefrigerantEntity(id: "r-22", summary: "R-22", gwp: 1810, safetyClass: "A1", poundsPerTon: 2.9),
+  ]
+}
+
+@available(iOS 18.0, *)
+extension RefrigerantEntity: IndexedEntity {}
+
+@available(iOS 16.0, *)
+struct RefrigerantQuery: EntityQuery {
+  func entities(for identifiers: [String]) async throws -> [RefrigerantEntity] {
+    RefrigerantEntity.all.filter { identifiers.contains($0.id) }
+  }
+
+  func suggestedEntities() async throws -> [RefrigerantEntity] {
+    RefrigerantEntity.all
+  }
+
+  func defaultResult() async -> RefrigerantEntity? {
+    RefrigerantEntity.all.first
+  }
+}
+
+@available(iOS 16.0, *)
+struct RefrigerantChargeIntent: AppIntent {
+  static var title: LocalizedStringResource = "Refrigerant charge per ton"
+  static var description = IntentDescription("Pounds of charge per ton of cooling, with GWP and ASHRAE safety class.")
+
+  @Parameter(title: "Refrigerant")
+  var refrigerant: RefrigerantEntity
+
+  func perform() async throws -> some IntentResult & ProvidesDialog {
+    let pounds = refrigerant.poundsPerTon
+    let text = "\(refrigerant.summary): about \(String(format: "%.1f", pounds)) lb per ton of cooling. GWP \(refrigerant.gwp), safety class \(refrigerant.safetyClass)."
+    return .result(dialog: IntentDialog(stringLiteral: text))
+  }
+}
